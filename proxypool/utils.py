@@ -1,21 +1,15 @@
 import requests
 import asyncio
 import aiohttp
+from bs4 import BeautifulSoup
 from requests.exceptions import ConnectionError
-from fake_useragent import UserAgent
-import random
+from proxypool.setting import HEADERS
+
 
 def get_page(url, options={}):
-    ua = UserAgent()
-    base_headers = {
-        'User-Agent':  ua.random,
-        'Accept-Encoding': 'gzip, deflate, sdch',
-        'Accept-Language': 'zh-CN,zh;q=0.8'
-    }
-    headers = dict(base_headers, **options)
     print('Getting', url)
     try:
-        r = requests.get(url, headers=headers)
+        r = requests.get(url, headers=HEADERS)
         print('Getting result', url, r.status_code)
         if r.status_code == 200:
             return r.text
@@ -23,6 +17,18 @@ def get_page(url, options={}):
         print('Crawling Failed', url)
         return None
 
+def get_soup(url):
+    """
+    将网页解析为BeautifulSoup对象并返回
+    :param url: target url
+    :return: BeautifulSoup Object
+    """
+    html = requests.get(url, headers=HEADERS)
+    try:
+        soup = BeautifulSoup(html.content.decode('utf-8'), 'lxml')
+    except UnicodeDecodeError:
+        soup = BeautifulSoup(html.text, 'lxml')
+    return soup
 
 class Downloader(object):
     """

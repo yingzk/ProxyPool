@@ -1,5 +1,5 @@
 import redis
-from proxypool.error import PoolEmptyError
+from proxypool.errors import PoolEmptyError
 from proxypool.setting import HOST, PORT, PASSWORD
 
 

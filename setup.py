@@ -3,11 +3,10 @@ from setuptools import setup
 setup(
     name='proxy-pool',
     version='1.0.0',
-    description='High performance proxy pool',
-    long_description='A proxy pool project modified from WiseDoge/ProxyPool',
-    author=['Germey', 'WiseDoge'],
-    author_email='cqc@cuiqingcai.com',
-    url='https://github.com/Germey/ProxyPool',
+    description='Proxy pool',
+    author=['YingJoy'],
+    author_email='yzk.1314@outlook.com',
+    url='https://github.com/yingzk/ProxyPool',
     packages=[
         'proxy-pool'
     ],

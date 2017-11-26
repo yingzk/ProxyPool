@@ -1,4 +1,4 @@
-from .utils import get_page
+from .utils import get_page, get_soup
 from pyquery import PyQuery as pq
 import re
 
@@ -39,7 +39,6 @@ class FreeProxyGetter(object, metaclass=ProxyMetaclass):
             result = adress + ':' + port
             yield result.replace(' ', '')
 
-
     def crawl_xicidaili(self):
         for page in range(1, 4):
             start_url = 'http://www.xicidaili.com/wt/{}'.format(page)
@@ -76,20 +75,6 @@ class FreeProxyGetter(object, metaclass=ProxyMetaclass):
                     ip = tr.find('td:nth-child(1)').text()
                     port = tr.find('td:nth-child(2)').text()
                     yield ':'.join([ip, port])
-
-
-    def crawl_proxy360(self):
-        start_url = 'http://www.proxy360.cn/Region/China'
-        print('Crawling', start_url)
-        html = get_page(start_url)
-        if html:
-            doc = pq(html)
-            lines = doc('div[name="list_proxy_ip"]').items()
-            for line in lines:
-                ip = line.find('.tbBottomLine:nth-child(1)').text()
-                port = line.find('.tbBottomLine:nth-child(2)').text()
-                yield ':'.join([ip, port])
-
 
     def crawl_goubanjia(self):
         start_url = 'http://www.goubanjia.com/free/gngn/index.shtml'
@@ -147,4 +132,11 @@ class FreeProxyGetter(object, metaclass=ProxyMetaclass):
                     adress_port = adress+':'+port
                     yield adress_port.replace(' ','')
 
-
+    def crawl_proxy360(self):
+        start_url = 'http://www.proxy360.cn/default.aspx'
+        soup = get_soup(start_url)
+        for proxy in soup.find_all('div', {'class':'proxylistitem'}):
+            item = proxy.find_all('span', {'class':'tbBottomLine'})
+            ip = item[0].get_text().replace('\r\n', '').replace(' ', '')
+            port = item[1].get_text().replace('\r\n', '').replace(' ', '')
+            yield ':'.join([ip, port])
